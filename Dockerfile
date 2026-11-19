@@ -6,4 +6,4 @@ RUN npm ci --omit=dev
 COPY src ./src
 ENV PORT=2567
 EXPOSE 2567
-CMD ["node", "src/index.js"]
+CMD ["node", "src/main.js"]

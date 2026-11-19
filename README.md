@@ -52,7 +52,7 @@ price, and a player's moves only go a few milliseconds away.
 
 ```bash
 npm install
-npm test                                              # 17 tests: two simulated players per test, sign-in check
+npm test                                              # 15 tests: two simulated players per test, sign-in check
 AUTH_MODE=off ALLOW_INSECURE_AUTH=1 npm start         # local only: the "token" is taken as the user id
 ```
 
@@ -81,8 +81,16 @@ Any machine that runs Node 20+ and is reachable over HTTPS will do.
 
 ### Colyseus Cloud (from $15/month, no server to look after)
 
-Connect this repo in the Colyseus Cloud dashboard. It runs `npm start`, and the settings in `.env.example` go in its
-environment.
+The repo is ready for it as it is: `ecosystem.config.cjs` at the root points at `src/main.js`, and on Colyseus Cloud the
+server hands itself to `@colyseus/tools`, which is how Colyseus Cloud starts apps.
+
+1. Create an application. Pick **one region only**, the one nearest New York (US East). Rooms live in one server's
+   memory, so two regions would split players with the same room code onto different servers, and they'd never meet.
+2. **Settings → Build & deploy → Deploy from GitHub → Connect GitHub**, choose `ASCoding11/game-server`, branch
+   `main`, root directory `/`. Every push to `main` then deploys by itself (no command line needed).
+3. **Settings → Environment**: `FIREBASE_PROJECT_ID=rumblekarts` and `ALLOWED_ORIGINS` as in `.env.example`.
+4. Its dashboard shows the app's address (something like `https://xxxx.colyseus.cloud`). `https://<address>/health`
+   should answer `{"ok":true,...}`. The games then connect to `wss://<address>`.
 
 ### Container hosts
 

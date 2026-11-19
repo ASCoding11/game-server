@@ -58,4 +58,3 @@ export async function start({ port = PORT, verify } = {}) {
   return server;
 }
 
-if (import.meta.url === 'file://' + process.argv[1]) start().catch(e => { console.error(e); process.exit(1); });
