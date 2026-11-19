@@ -1,0 +1,28 @@
+# Updates the server after every push to main, once the tests pass. Does nothing until you add three repository
+# secrets (Settings -> Secrets and variables -> Actions): DEPLOY_HOST (the server's IP), DEPLOY_USER (relay) and
+# DEPLOY_KEY (the private SSH key that setup.sh printed instructions for).
+name: Deploy
+on:
+  workflow_run:
+    workflows: [Tests]
+    branches: [main]
+    types: [completed]
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the server is set up
+        id: cfg
+        env: { HOST: '${{ secrets.DEPLOY_HOST }}' }
+        run: echo "ready=$([ -n "$HOST" ] && echo yes || echo no)" >> "$GITHUB_OUTPUT"
+      - name: Pull, install and reload
+        if: steps.cfg.outputs.ready == 'yes'
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          USER: ${{ secrets.DEPLOY_USER }}
+          KEY: ${{ secrets.DEPLOY_KEY }}
+        run: |
+          mkdir -p ~/.ssh && echo "$KEY" > ~/.ssh/id && chmod 600 ~/.ssh/id
+          ssh -i ~/.ssh/id -o StrictHostKeyChecking=accept-new "$USER@$HOST" \
+            'cd ~/game-server && git pull --ff-only && npm ci --omit=dev && pm2 reload ecosystem.config.cjs && pm2 save'

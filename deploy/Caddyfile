@@ -1,0 +1,5 @@
+# Caddy gets the HTTPS certificate on its own and passes game traffic to the relay.
+# Replace play.example.com with your subdomain (its DNS A record must point at this server).
+play.example.com {
+	reverse_proxy localhost:2567
+}
