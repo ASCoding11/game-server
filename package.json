@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/main.js",
+    "build": "echo no build step",
     "test": "node --test test/*.test.js"
   },
   "author": "",
