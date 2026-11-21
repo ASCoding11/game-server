@@ -14,7 +14,8 @@
 import { Room } from '@colyseus/core';
 import { splitPath, getAt, applyOp, resolveOp, expand, same, clean } from './tree.js';
 
-export const ROOM_KEY = /^[a-z]{2}-[A-Za-z0-9_-]{1,40}$/;
+// A room code: most games use <prefix>-<code> (cl-4821, ss-pub-2); Rumble Karts' codes have no prefix (lobby-2, maple42).
+export const ROOM_KEY = /^[A-Za-z0-9][A-Za-z0-9_-]{0,44}$/;
 export const live = new Map();          // room code -> RelayRoom, for /peek
 
 const LINGER_MS = 2 * 60 * 1000;        // keep an empty room's data this long, like a refresh or a quick rejoin needs
